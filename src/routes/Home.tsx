@@ -31,9 +31,9 @@ const Home = () => {
       <li>
         <a href="/user-claims">User Claims</a>
       </li>
-      {/* <li>
+      <li>
         <a href="/vanilla-avatar-stack">Avatar Stack - Vanilla JS</a>
-      </li> */}
+      </li>
       <li>
         <a href="/vite-react-avatar-stack">Avatar Stack - React</a>
       </li>
