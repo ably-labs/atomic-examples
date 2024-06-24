@@ -1,4 +1,4 @@
-.container {
+.avatarStackContainer {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -6,4 +6,4 @@
     position: relative;
     background-color: #f4f8fb;
     height: 100vh;
-  }
+}

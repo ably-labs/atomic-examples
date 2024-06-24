@@ -41,7 +41,7 @@ const AvatarStack = () => {
   const { others, self } = useMembers();
 
   return (
-    <div id="avatar-stack" className={`example-container ${styles.container}`}>
+    <div id="avatar-stack" className={`example-container ${styles.avatarStackContainer}`}>
       {/** 💡 Stack of first 5 user avatars including yourself.💡 */}
       <Avatars self={self as Member | null} otherUsers={others as Member[]} />
     </div>

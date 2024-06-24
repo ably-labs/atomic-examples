@@ -189,7 +189,7 @@ const Avatars = ({
   const totalWidth = calculateTotalWidth({ users: otherUsers });
 
   return (
-    <div className={styles.container} style={{ width: `${totalWidth}px` }}>
+    <div className={styles.avatarsContainer} style={{ width: `${totalWidth}px` }}>
       <div
         className={styles.avatar}
         onMouseOver={() => setHover(true)}

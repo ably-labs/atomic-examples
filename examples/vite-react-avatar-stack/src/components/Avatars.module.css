@@ -1,6 +1,6 @@
 /** AVATARS **/
 
-.container {
+.avatarsContainer {
   position: relative;
   display: flex;
 }
