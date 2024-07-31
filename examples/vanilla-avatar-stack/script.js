@@ -1,11 +1,8 @@
 import Spaces from '@ably/spaces'
 import { Realtime } from 'ably'
 import { nanoid } from 'nanoid'
-import { generate } from "random-words";
 import classNames from "classnames";
-import dayjs from "dayjs";
 
-const REMOVE_USER_AFTER_MILLIS = 120_000;
 const MAX_USERS_BEFORE_LIST = 4;
 const HORIZONTAL_SPACING_OFFSET = 40;
 const OVERLAP_AMOUNT = 40;
@@ -15,25 +12,10 @@ const client = new Realtime.Promise({
   clientId: nanoid(),
   key: import.meta.env.VITE_ABLY_KEY,
 })
+
 const spaces = new Spaces(client)
-// TODO: Update this to call getSpaceNameFromUrl()
 const space = await spaces.get('avatar-stack')
-
 const avatarStack = document.getElementById('avatar-stack')
-
-function getSpaceNameFromUrl() {
-  const url = new URL(window.location.href);
-  const spaceNameInParams = url.searchParams.get("space");
-
-  if (spaceNameInParams) {
-    return spaceNameInParams;
-  } else {
-    const generatedName = generate({ exactly: 3, join: "-" });
-    url.searchParams.set("space", generatedName);
-    window.history.replaceState({}, "", `?${url.searchParams.toString()}`);
-    return generatedName;
-  }
-};
 
 function calculateRightOffset(options) {
   const { usersCount, index = 0 } = options;
@@ -50,17 +32,8 @@ function calculateTotalWidth(users) {
   );
 }
 
-const mockNames = [
-  "Anum Reeve",
-  "Tiernan Stubbs",
-  "Hakim Hernandez",
-]
-
-const mockColors = [
-  "#9951F5",
-  "#1BF5C3",
-  "#F54A4A",
-]
+const mockNames = ["Anum Reeve", "Tiernan Stubbs", "Hakim Hernandez"]
+const mockColors = ["#9951F5", "#1BF5C3", "#F54A4A"]
 
 await space.enter({
   name: mockNames[Math.floor(Math.random() * mockNames.length)],
@@ -70,7 +43,6 @@ await space.enter({
 
   await getMyAvatar()
   getOtherAvatars(otherMembers.slice(0, MAX_USERS_BEFORE_LIST).reverse())
-  getSurplusAvatars(otherMembers)
 }).catch((err) => {
   console.error('Error joining space:', err);
 })
@@ -230,10 +202,6 @@ function createUserInfo(user, isSelf = false) {
     .map(word => word.charAt(0))
     .join("");
 
-  const statusIndicatorText = user.isConnected
-    ? "Online"
-    : "Last seen " + dayjs().to(user.lastEvent.timestamp);
-
   const name = isSelf
     ? `${user.profileData.name} (You)`
     : user.profileData.name;
@@ -261,58 +229,12 @@ function createUserInfo(user, isSelf = false) {
   nameElement.className = 'name';
   nameElement.textContent = name;
 
-  const statusWrapper = document.createElement('div');
-  statusWrapper.className = 'wrapper';
-
-  const statusIndicatorTextElement = document.createElement('p');
-  statusIndicatorTextElement.className = 'statusIndicatorText';
-  statusIndicatorTextElement.textContent = statusIndicatorText;
-
-  statusWrapper.appendChild(statusIndicatorTextElement);
-
   userListContainer.appendChild(nameElement);
-  userListContainer.appendChild(statusWrapper);
 
   wrapper.appendChild(userInfoContainer);
   wrapper.appendChild(userListContainer);
 
   return userDiv;
-}
-
-async function getSurplusAvatars(otherUsers) {
-  let showList = false;
-
-  if (otherUsers.length > MAX_USERS_BEFORE_LIST) {
-    const surplusContainer = document.createElement('div');
-    surplusContainer.className = 'surplusContainer';
-
-    const badge = document.createElement('div');
-    badge.className = 'badge';
-    badge.style.zIndex = otherUsers.length + 50;
-    badge.textContent = `+${otherUsers.slice(MAX_USERS_BEFORE_LIST).length}`;
-    surplusContainer.appendChild(badge);
-
-    const listContainer = document.createElement('div');
-    listContainer.className = 'list';
-    listContainer.style.display = 'none';
-    otherUsers.slice(MAX_USERS_BEFORE_LIST).forEach(user => {
-      const userDiv = createUserInfo(user)
-      listContainer.appendChild(userDiv);
-    });
-    surplusContainer.appendChild(listContainer);
-
-    badge.addEventListener('mouseover', () => {
-      listContainer.style.display = 'block'
-    });
-
-    badge.addEventListener('mouseleave', () => {
-        listContainer.style.display = 'none'
-    });
-
-    if (otherUsers.length > MAX_USERS_BEFORE_LIST) {
-      document.getElementById("avatars").appendChild(surplusContainer);
-    }
-  }
 }
 
 const otherMembers = await space.members.getOthers()

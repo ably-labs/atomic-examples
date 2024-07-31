@@ -3,7 +3,6 @@ import classNames from "classnames";
 import { FunctionComponent } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import useClickOutsideList from "../hooks/useClickOutsideList";
 
 import {
   MAX_USERS_BEFORE_LIST,
@@ -126,56 +125,9 @@ const UserInfo: FunctionComponent<{ user: Member; isSelf?: boolean }> = ({
       {/* 💡 Display the name of the user from the `profileData` object 💡 */}
       <div id="user-list" className={styles.userList}>
         <p className={styles.name}>{name}</p>
-        <div className={styles.wrapper}>
-          <div
-            style={{
-              backgroundColor: user.isConnected
-                ? "rgb(34 197 94)"
-                : "rgb(100 116 139)",
-            }}
-            className={styles.statusIndicator}
-          />
-          <p className={styles.statusIndicatorText}>{statusIndicatorText}</p>
-        </div>
       </div>
     </div>
   );
-};
-
-const Surplus: FunctionComponent<{ otherUsers: Member[] }> = ({
-  otherUsers,
-}) => {
-  const [showList, setShowList] = useState(false);
-  const { listRef, plusButtonRef } = useClickOutsideList(() =>
-    setShowList(false),
-  );
-
-  return otherUsers.length > MAX_USERS_BEFORE_LIST ? (
-    <div className={styles.surplusContainer}>
-      <div
-        className={styles.badge}
-        style={{
-          zIndex: otherUsers.length + 50,
-        }}
-        ref={plusButtonRef}
-        onClick={() => {
-          setShowList(!showList);
-        }}
-      >
-        +{otherUsers.slice(MAX_USERS_BEFORE_LIST).length}
-      </div>
-
-      {showList ? (
-        <div className={styles.list} ref={listRef}>
-          {otherUsers.slice(MAX_USERS_BEFORE_LIST).map((user) => (
-            <div className={styles.user} key={user.clientId}>
-              <UserInfo user={user} />
-            </div>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  ) : null;
 };
 
 const Avatars = ({
@@ -208,8 +160,6 @@ const Avatars = ({
         usersCount={otherUsers.length}
         users={otherUsers.slice(0, MAX_USERS_BEFORE_LIST).reverse()}
       />
-      {/** 💡 Dropdown list of surplus users 💡 */}
-      <Surplus otherUsers={otherUsers} />
     </div>
   );
 };
