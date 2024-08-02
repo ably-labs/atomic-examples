@@ -60,7 +60,7 @@ export function Avatar({ user, isSelf }: { user: Member, isSelf: boolean }) {
           backgroundColor: user.profileData.memberColor
         }}
         onMouseOver={() => setHover(true)}
-        onMouseLeave={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         id="avatar"
       >
         <p className={"textWhite nameOthers"}>{userInitials}</p>
