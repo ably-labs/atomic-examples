@@ -52,7 +52,7 @@ export function Avatar({ user, isSelf }: { user: Member, isSelf: boolean }) {
     .join("");
 
   return (
-    <div>
+    <div className="avatarContainer">
       <div
         key={user.clientId}
         className="avatar"

@@ -12,6 +12,10 @@
     display: inline-flex;
 }
 
+.avatarContainer {
+    position: relative;
+}
+
 .avatar {
     background-color: rgb(234, 88, 12);
     height: 3rem;
@@ -43,7 +47,8 @@
 
 .popup {
     position: absolute;
-    top: 4rem;
+    left: -5rem;
+    top: -4.8rem;
     padding: 1rem;
     background-color: #000;
     border-radius: 8px;
