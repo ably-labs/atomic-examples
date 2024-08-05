@@ -35,7 +35,13 @@ const Home = () => {
         <a href="/vanilla-avatar-stack">Avatar Stack - Vanilla JS</a>
       </li>
       <li>
+        <a href="/vanilla-avatar-stack-2">Avatar Stack - Vanilla JS (Revised)</a>
+      </li>
+      <li>
         <a href="/vite-react-avatar-stack">Avatar Stack - React</a>
+      </li>
+      <li>
+        <a href="/vite-react-avatar-stack-2">Avatar Stack - React (Revised)</a>
       </li>
     </ul>
   );
