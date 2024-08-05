@@ -31,7 +31,7 @@ function AvatarStack() {
     space?.enter({ name, memberColor });
   }, [space]);
 
-  /** 💡 Get everybody except the local member in the space and the local member 💡 */
+  /** 💡 Get everybody in the space including the local member 💡 */
   const { others, self } = useMembers();
   const hasMoreUsers = others.length > 3;
 
