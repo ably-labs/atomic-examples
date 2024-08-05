@@ -15,7 +15,7 @@ const mockNames = [
   "Hakim Hernandez",
 ];
 
-function Example() {
+function AvatarStack() {
   const name = useMemo(() => {
     return mockNames[Math.floor(Math.random() * mockNames.length)];
   }, []);
@@ -23,24 +23,29 @@ function Example() {
     return colors[Math.floor(Math.random() * colors.length)];
   }, []);
 
+  /** 💡 Get a handle on a space instance 💡 */
   const { space } = useSpace();
 
+  /** 💡 Enter the space as soon as it's available 💡 */
   useEffect(() => {
     space?.enter({ name, memberColor });
   }, [space]);
 
+  /** 💡 Get everybody except the local member in the space and the local member 💡 */
   const { others, self } = useMembers();
   const hasMoreUsers = others.length > 3;
 
   return (
     <div className="avatarStackContainer">
       <div className="avatars">
+        {/** 💡 Add your avatar to the stack.💡 */}
         {self && (
           <div className="selfAvatar" key={self.clientId}>
             <Avatar user={self as Member} isSelf={true} />
           </div>
         )}
 
+        {/** 💡 Stack of first 4 user avatars excluding yourself.💡 */}
         {others.slice(0, 4).map(( other ) => {
           return (
             <div className="otherAvatar" key={other.clientId}>
@@ -66,7 +71,7 @@ function Example() {
 const App = ({ spaces }: { spaces: Spaces }) => (
   <SpacesProvider client={spaces}>
     <SpaceProvider name="random-name">
-      <Example />
+      <AvatarStack />
     </SpaceProvider>
   </SpacesProvider>
 );
