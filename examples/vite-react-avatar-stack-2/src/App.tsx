@@ -70,7 +70,7 @@ function AvatarStack() {
 
 const App = ({ spaces }: { spaces: Spaces }) => (
   <SpacesProvider client={spaces}>
-    <SpaceProvider name="random-name">
+    <SpaceProvider name="avatar-stack">
       <AvatarStack />
     </SpaceProvider>
   </SpacesProvider>
