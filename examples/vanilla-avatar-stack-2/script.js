@@ -2,7 +2,7 @@ import Spaces from '@ably/spaces'
 import { Realtime } from 'ably'
 import { nanoid } from 'nanoid'
 
-const client = new Realtime({
+const client = new Realtime.Promise({
     clientId: nanoid(),
     key: import.meta.env.VITE_ABLY_KEY,
 })
