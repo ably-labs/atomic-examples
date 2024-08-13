@@ -29,6 +29,10 @@ function AvatarStack() {
   /** 💡 Enter the space as soon as it's available 💡 */
   useEffect(() => {
     space?.enter({ name, memberColor });
+
+    return () => {
+      space?.leave();
+    };
   }, [space]);
 
   /** 💡 Get everybody in the space including the local member 💡 */
