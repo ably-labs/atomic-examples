@@ -5,87 +5,75 @@ import { nanoid } from 'nanoid';
 export type Member = Omit<SpaceMember, "profileData"> & {
   profileData: { memberColor: string; name: string };
 };
-
-const client = new Realtime.Promise({
-  clientId: nanoid(),
-  key: import.meta.env.VITE_ABLY_KEY as string,
-});
-
-const spaces = new Spaces(client);
-const space = await spaces.get('avatar-stack');
-
 const mockNames: string[] = ["Anum Reeve", "Tiernan Stubbs", "Hakim Hernandez"];
 const mockColors: string[] = ["#9951F5", "#f1c232", "#f44336"];
 
-/** 💡 Add every avatar that enters 💡 */
-space.members.subscribe('enter', (memberUpdate: SpaceMember) => {
-  const member: Member = {
-    ...memberUpdate,
-    profileData: {
-      memberColor: (memberUpdate.profileData as any).memberColor,
-      name: (memberUpdate.profileData as any).name,
-    }
-  };
-  addAvatar(member, true);
-});
+connect()
 
-/** 💡 Enter the space as soon as it's available 💡 */
-await space.enter({
-  name: mockNames[Math.floor(Math.random() * mockNames.length)],
-  memberColor: mockColors[Math.floor(Math.random() * mockColors.length)],
-}).then(async () => {
-  const otherMembers = await space.members.getOthers();
-
-  /** 💡 Get first four except the local member in the space 💡 */
-  space.members.subscribe('enter', (memberUpdate: SpaceMember) => {
-    if (memberUpdate.profileData && typeof memberUpdate.profileData === 'object' &&
-        typeof (memberUpdate.profileData as any).memberColor === 'string' &&
-        typeof (memberUpdate.profileData as any).name === 'string') {
-
-      const member: Member = {
-        ...memberUpdate,
-        profileData: {
-          memberColor: (memberUpdate.profileData as any).memberColor,
-          name: (memberUpdate.profileData as any).name,
-        }
-      };
-
-      addAvatar(member, true);
-    } else {
-      console.warn('Received a member with invalid profile data:', memberUpdate);
-    }
+async function connect() {
+  const client = new Realtime.Promise({
+    clientId: nanoid(),
+    key: import.meta.env.VITE_ABLY_KEY as string,
   });
 
-  /** 💡 Get a count of the number exceeding four and display as a single tally 💡 */
-  if (otherMembers.length > 4) {
-    const avatarsElement = document.getElementById('avatars');
-    if (avatarsElement) {
-      const avatarElement = document.createElement('div');
-      avatarElement.className = 'avatar';
-      avatarElement.style.backgroundColor = '#595959';
+  const spaces = new Spaces(client);
+  const space = await spaces.get('avatar-stack');
 
-      const nameElement = document.createElement('p');
-      nameElement.className = 'textWhite nameOthers';
-      nameElement.textContent = `+${otherMembers.length - 4}`;
+  /** 💡 Add every avatar that enters 💡 */
+  space.members.subscribe('enter', (memberUpdate: SpaceMember) => {
+    const member: Member = {
+      ...memberUpdate,
+      profileData: {
+        memberColor: (memberUpdate.profileData as any).memberColor,
+        name: (memberUpdate.profileData as any).name,
+      }
+    };
+    renderAvatar(member, true);
+  });
 
-      avatarElement.appendChild(nameElement);
-      avatarsElement.appendChild(avatarElement);
+  /** 💡 Enter the space as soon as it's available 💡 */
+  space.enter({
+    name: mockNames[Math.floor(Math.random() * mockNames.length)],
+    memberColor: mockColors[Math.floor(Math.random() * mockColors.length)],
+  }).then(async () => {
+    const otherMembers = await space.members.getOthers();
+
+    /** 💡 Get first four except the local member in the space 💡 */
+    otherMembers.slice(0, 4).forEach((member) => {
+      renderAvatar(member as Member);
+    });
+
+    /** 💡 Get a count of the number exceeding four and display as a single tally 💡 */
+    if (otherMembers.length > 4) {
+      const avatarsElement = document.getElementById('avatars');
+      if (avatarsElement) {
+        const avatarElement = document.createElement('div');
+        avatarElement.className = 'avatar';
+        avatarElement.style.backgroundColor = '#595959';
+
+        const nameElement = document.createElement('p');
+        nameElement.className = 'textWhite nameOthers';
+        nameElement.textContent = `+${otherMembers.length - 4}`;
+
+        avatarElement.appendChild(nameElement);
+        avatarsElement.appendChild(avatarElement);
+      }
     }
-  }
-}).catch((err) => {
-  console.error('Error joining space:', err);
-});
+  }).catch((err) => {
+    console.error('Error joining space:', err);
+  });
+}
 
-function createUserInfo(user: Member, isSelf: boolean = false): HTMLDivElement {
+function buildUserInfo(member: Member, isSelf: boolean = false): HTMLDivElement {
   const wrapper = document.createElement('div');
   wrapper.className = 'wrapper';
 
   const userInfoContainer = document.createElement('div');
   userInfoContainer.className = 'userInfoContainer';
-  userInfoContainer.style.backgroundColor = user.profileData.memberColor;
+  userInfoContainer.style.backgroundColor = member.profileData.memberColor;
   userInfoContainer.id = 'avatar';
 
-  const userInitials = user.profileData.name
+  const userInitials = member.profileData.name
     .split(" ")
     .map((word: string) => word.charAt(0))
     .join("");
@@ -103,7 +91,7 @@ function createUserInfo(user: Member, isSelf: boolean = false): HTMLDivElement {
 
   const nameElement = document.createElement('p');
   nameElement.className = 'name';
-  nameElement.textContent = isSelf ? user.profileData.name + ' (You)' : user.profileData.name;
+  nameElement.textContent = isSelf ? member.profileData.name + ' (You)' : member.profileData.name;
 
   userList.appendChild(nameElement);
   wrapper.appendChild(userList);
@@ -111,8 +99,8 @@ function createUserInfo(user: Member, isSelf: boolean = false): HTMLDivElement {
   return wrapper;
 }
 
-async function addAvatar(user: Member, isSelf: boolean = false): Promise<void> {
-  const userInitials = user.profileData.name
+async function renderAvatar(member: Member, isSelf: boolean = false): Promise<void> {
+  const userInitials = member.profileData.name
     .split(" ")
     .map((word: string) => word.charAt(0))
     .join("");
@@ -127,9 +115,9 @@ async function addAvatar(user: Member, isSelf: boolean = false): Promise<void> {
 
     const avatar = document.createElement('div');
     avatar.className = 'avatar';
-    avatar.style.backgroundColor = user.profileData.memberColor;
-    avatar.setAttribute('data-member-id', user.clientId);
-    avatar.setAttribute('key', user.clientId);
+    avatar.style.backgroundColor = member.profileData.memberColor;
+    avatar.setAttribute('data-member-id', member['clientId']);
+    avatar.setAttribute('key', member['clientId']);
 
     const initials = document.createElement('p');
     initials.className = "textWhite";
@@ -141,7 +129,7 @@ async function addAvatar(user: Member, isSelf: boolean = false): Promise<void> {
     popup.className = 'popup';
     popup.style.display = 'none';
 
-    const userInfo = createUserInfo(user, isSelf);
+    const userInfo = buildUserInfo(member, isSelf);
     avatarElement.appendChild(avatarContainer);
     avatarContainer.appendChild(avatar);
     popup.appendChild(userInfo);

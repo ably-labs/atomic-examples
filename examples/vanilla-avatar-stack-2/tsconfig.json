@@ -1,26 +1,35 @@
 {
     "compilerOptions": {
-      "target": "ESNext",
-      "useDefineForClassFields": true,
-      "lib": ["DOM", "DOM.Iterable", "ESNext"],
-      "allowJs": false,
-      "skipLibCheck": true,
-      "esModuleInterop": false,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
+      "lib": [
+        "es2021",
+        "DOM",
+        "DOM.Iterable",
+      ],
       "module": "ESNext",
+      "target": "ESNext",
+      "strict": true,
+      "esModuleInterop": true,
       "moduleResolution": "Node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": true,
-      "jsx": "react-jsx"
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "allowUnusedLabels": false,
+      "allowUnreachableCode": false,
+      "exactOptionalPropertyTypes": true,
+      "noFallthroughCasesInSwitch": true,
+      "noImplicitOverride": true,
+      "noImplicitReturns": true,
+      "noPropertyAccessFromIndexSignature": true,
+      "noUncheckedIndexedAccess": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "checkJs": true,
+      // Everything below are custom changes for this app
+      "allowJs": true,
+      "outDir": "dist"
     },
-    "types": ["vite/client"],
-    "include": ["src", "vite-env.d.ts"],
-    "references": [
-      {
-        "path": "./tsconfig.node.json"
-      }
+    "include": [
+      "./src/**/*",
+      "./__tests__/**/*",
+      "vite-env.d.ts"
     ]
-  }
+}
