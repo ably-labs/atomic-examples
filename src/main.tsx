@@ -13,6 +13,10 @@ import EmojiReactions from "./routes/EmojiReactions";
 import UserClaims from "./routes/UserClaims";
 import MemberLocation from "./routes/MemberLocation";
 import ComponentLocking from "./routes/ComponentLocking";
+import VanillaAvatarStack from "./routes/VanillaAvatarStack";
+import VanillaAvatarStack2 from "./routes/VanillaAvatarStack2";
+import ViteReactAvatarStack from "./routes/ViteReactAvatarStack";
+import ViteReactAvatarStack2 from "./routes/ViteReactAvatarStack2";
 
 import "./styles/global.css";
 
@@ -50,6 +54,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           />
           <Route path="/emoji-reactions" element={<EmojiReactions />} />
           <Route path="/user-claims" element={<UserClaims />} />
+          <Route path="/vanilla-avatar-stack" element={<VanillaAvatarStack />} />
+          <Route path="/vanilla-avatar-stack-2" element={<VanillaAvatarStack2 />} />
+          <Route path="/vite-react-avatar-stack" element={<ViteReactAvatarStack spaces={spaces} />} />
+          <Route path="/vite-react-avatar-stack-2" element={<ViteReactAvatarStack2 spaces={spaces} />} />
         </Route>
       </Routes>
     </BrowserRouter>
