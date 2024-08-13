@@ -44,21 +44,7 @@ async function connect() {
     });
 
     /** 💡 Get a count of the number exceeding four and display as a single tally 💡 */
-    if (otherMembers.length > 4) {
-      const avatarsElement = document.getElementById('avatars');
-      if (avatarsElement) {
-        const avatarElement = document.createElement('div');
-        avatarElement.className = 'avatar';
-        avatarElement.style.backgroundColor = '#595959';
-
-        const nameElement = document.createElement('p');
-        nameElement.className = 'textWhite nameOthers';
-        nameElement.textContent = `+${otherMembers.length - 4}`;
-
-        avatarElement.appendChild(nameElement);
-        avatarsElement.appendChild(avatarElement);
-      }
-    }
+    renderExceedingCounter(otherMembers)
   }).catch((err) => {
     console.error('Error joining space:', err);
   });
@@ -144,5 +130,26 @@ async function renderAvatar(member: Member, isSelf: boolean = false): Promise<vo
     avatar.addEventListener('mouseleave', () => {
       popup.style.display = 'none';
     });
+  }
+}
+
+function renderExceedingCounter(otherMembers: SpaceMember[]) {
+  console.log('here');
+  console.log(otherMembers);
+  if (otherMembers.length > 4) {
+    const avatarsElement = document.getElementById('avatars');
+
+    if (avatarsElement) {
+      const avatarElement = document.createElement('div');
+      avatarElement.className = 'avatar';
+      avatarElement.style.backgroundColor = '#595959';
+
+      const nameElement = document.createElement('p');
+      nameElement.className = 'textWhite nameOthers';
+      nameElement.textContent = `+${otherMembers.length - 4}`;
+
+      avatarElement.appendChild(nameElement);
+      avatarsElement.appendChild(avatarElement);
+    }
   }
 }
